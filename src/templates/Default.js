@@ -1,5 +1,4 @@
 import Container from '@material-ui/core/Container';
-import { makeStyles } from '@material-ui/core/styles'
 
 import Header from '../partials/Header/Header'
 
