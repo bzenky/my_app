@@ -1,5 +1,9 @@
+import { useState } from 'react'
+
 import { makeStyles } from '@material-ui/core/styles'
 import classNames from 'classnames'
+
+import ModalConfirm from './ModalConfirm'
 
 import { 
   Card, 
@@ -8,9 +12,9 @@ import {
   IconButton, 
   Avatar } from '@material-ui/core'
 
-import FavoriteIcon from '@material-ui/icons/Favorite'
-import ShareIcon from '@material-ui/icons/Share'
 
+import EditIcon from '@material-ui/icons/Edit'
+import DeleteIcon from '@material-ui/icons/Delete'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -19,36 +23,62 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const CustomerCard = ({
+  id,
   name,
   lastname,
   email,
   avatar,
   className,
+  onRemoveCustomer,
 }) => {
 
-  const classes = useStyles();
+  const classes = useStyles()
+
+  const [openModal, setOpenModal] = useState(false)
+
+  const handleToggleOpenModal = () => {
+    setOpenModal(!openModal)
+  }
+
+  const handleConfirmModal = id => {
+    onRemoveCustomer(id)
+    handleToggleOpenModal()
+  }
+
+  const handleRemoveCustomer = () => {
+    handleToggleOpenModal()
+  }
 
   return (
-    <Card className={classNames(className, classes.root)}>
-      <CardHeader
-        avatar={
-          <Avatar aria-label="recipe" src={avatar}>
-            R
-          </Avatar>
-        }
-        title={`${name} ${lastname}`}
-        subheader={email}
+    <>
+      <Card className={classNames(className, classes.root)}>
+        <CardHeader
+          avatar={
+            <Avatar aria-label="recipe" src={avatar}>
+              R
+            </Avatar>
+          }
+          title={`${name} ${lastname}`}
+          subheader={email}
+        />
+        <CardActions disableSpacing>
+          <IconButton aria-label="editar cadastro">
+            <EditIcon />
+          </IconButton>
+          <IconButton aria-label="remover cadastro" onClick={handleRemoveCustomer}>
+            <DeleteIcon />
+          </IconButton>
+        </CardActions>
+      </Card>
+      <ModalConfirm
+      open={openModal}
+      onClose={handleToggleOpenModal}
+      onConfirm={() => handleConfirmModal(id)}
+      title="Deseja realmente excluir este cadastro ?" 
+      message="Ao confirmar não será possível reverter esta operação."
       />
-      <CardActions disableSpacing>
-        <IconButton aria-label="add to favorites">
-          <FavoriteIcon />
-        </IconButton>
-        <IconButton aria-label="share">
-          <ShareIcon />
-        </IconButton>
-      </CardActions>
-    </Card>
-  );
+    </>
+  )
 }
 
 export default CustomerCard
